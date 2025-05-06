@@ -1,28 +1,40 @@
-# database/db.py
-import sqlite3
+from typing import Optional, Dict
+import aiosqlite
 
-# Подключение к БД (создаётся, если её нет)
-conn = sqlite3.connect("users.db")
-cursor = conn.cursor()
+DB_NAME = "users.db"
 
-# Создание таблицы пользователей
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    telegram_id INTEGER UNIQUE,
-    name TEXT,
-    employee_id INTEGER
-)
-""")
-conn.commit()
+# Инициализация базы данных (создание таблицы)
+async def init_db():
+    async with aiosqlite.connect(DB_NAME) as db:
+        await db.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            telegram_id INTEGER UNIQUE,
+            name TEXT,
+            employee_id INTEGER
+        )
+        """)
+        await db.commit()
 
-# Функция для добавления нового пользователя
-def add_user(telegram_id: int, name: str, employee_id: int):
-    cursor.execute("INSERT OR REPLACE INTO users (telegram_id, name, employee_id) VALUES (?, ?, ?)",
-                   (telegram_id, name, employee_id))
-    conn.commit()
+# Добавление или обновление пользователя
+async def add_user(telegram_id: int, name: str, employee_id: int):
+    async with aiosqlite.connect(DB_NAME) as db:
+        await db.execute("""
+        INSERT OR REPLACE INTO users (telegram_id, name, employee_id)
+        VALUES (?, ?, ?)
+        """, (telegram_id, name, employee_id))
+        await db.commit()
 
-# Функция для получения пользователя по Telegram ID
-def get_user(telegram_id: int):
-    cursor.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
-    return cursor.fetchone()
+# Получение пользователя в виде строки
+async def get_user(telegram_id: int) -> Optional[aiosqlite.Row]:
+    async with aiosqlite.connect(DB_NAME) as db:
+        db.row_factory = aiosqlite.Row
+        cursor = await db.execute("SELECT * FROM users WHERE telegram_id = ?", (telegram_id,))
+        return await cursor.fetchone()
+
+# Получение пользователя в виде словаря
+async def get_user_dict(telegram_id: int) -> Optional[Dict]:
+    row = await get_user(telegram_id)
+    if row:
+        return dict(row)
+    return None

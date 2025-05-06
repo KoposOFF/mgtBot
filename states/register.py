@@ -1,6 +1,6 @@
-# states/register.py
-from aiogram.fsm.state import StatesGroup, State
+# states/register_state.py
+from aiogram.fsm.state import State, StatesGroup
 
-class Register(StatesGroup):
+class RegisterState(StatesGroup):
     name = State()
     employee_id = State()
