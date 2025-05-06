@@ -11,18 +11,18 @@ async def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             telegram_id INTEGER UNIQUE,
             name TEXT,
-            employee_id INTEGER
+            table_id INTEGER
         )
         """)
         await db.commit()
 
 # Добавление или обновление пользователя
-async def add_user(telegram_id: int, name: str, employee_id: int):
+async def add_user(telegram_id: int, name: str, table_id: int):
     async with aiosqlite.connect(DB_NAME) as db:
         await db.execute("""
-        INSERT OR REPLACE INTO users (telegram_id, name, employee_id)
+        INSERT OR REPLACE INTO users (telegram_id, name, table_id)
         VALUES (?, ?, ?)
-        """, (telegram_id, name, employee_id))
+        """, (telegram_id, name, table_id))
         await db.commit()
 
 # Получение пользователя в виде строки
@@ -38,3 +38,13 @@ async def get_user_dict(telegram_id: int) -> Optional[Dict]:
     if row:
         return dict(row)
     return None
+
+# Внесение записи об автобусе
+async def get_bus(bus_number: int):
+    async with aiosqlite.connect(DB_NAME) as db:
+        await db.execute("""
+        INSERT OR REPLACE INTO buses (bus_number)
+        VALUES (?)
+        """, (bus_number, ))
+        await db.commit()
+
