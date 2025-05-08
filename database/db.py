@@ -7,6 +7,10 @@ DB_NAME = "users.db"
 # Инициализация базы данных (создание таблицы)
 async def init_db():
     async with aiosqlite.connect(DB_NAME) as db:
+        # Включаем поддержку внешних ключей
+        await db.execute("PRAGMA foreign_keys = ON")
+
+        # Таблица пользователей
         await db.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,6 +19,29 @@ async def init_db():
             table_id INTEGER
         )
         """)
+
+        # Таблица автобусов
+        await db.execute("""
+        CREATE TABLE IF NOT EXISTS buses (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            bus_number TEXT UNIQUE
+        )
+        """)
+
+        # Таблица записей по автобусам
+        await db.execute("""
+        CREATE TABLE IF NOT EXISTS bus_reports (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            bus_id INTEGER,
+            problems TEXT,
+            pluses TEXT,
+            datetime TEXT,
+            submitted_by INTEGER,
+            FOREIGN KEY (bus_id) REFERENCES buses(id),
+            FOREIGN KEY (submitted_by) REFERENCES users(id)
+        )
+        """)
+
         await db.commit()
 
 # Добавление или обновление пользователя
