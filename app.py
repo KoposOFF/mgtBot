@@ -4,7 +4,7 @@ import logging
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart
-from handlers import register, start, bus_list
+from handlers import register, start, bus_list, bus_check
 from keyboards import start_kb
 from database.db import init_db 
 
@@ -19,6 +19,7 @@ dp = Dispatcher()
 dp.include_router(start.router)
 dp.include_router(register.router)
 dp.include_router(bus_list.router)
+dp.include_router(bus_check.router)
 
 
 
