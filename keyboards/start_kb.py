@@ -1,4 +1,4 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 start_kb = ReplyKeyboardMarkup(
     keyboard=[
@@ -15,15 +15,3 @@ menu_kb = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-#     return InlineKeyboardMarkup(
-#         inline_keyboard=[
-#             [InlineKeyboardButton(text="🚀 Старт", callback_data="start")]
-#         ]
-#     )
-
-def get_register_kb():
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [InlineKeyboardButton(text="📝 Регистрация", callback_data="register")]
-        ]
-    )

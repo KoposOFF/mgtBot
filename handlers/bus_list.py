@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 from datetime import datetime
 
-from database.db import get_bus, add_bus_record, insert_bus_report
+from database.db import get_bus, insert_bus_report
 from keyboards.start_kb import menu_kb
 
 router = Router()

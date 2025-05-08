@@ -3,9 +3,7 @@ import os
 import logging
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.filters import CommandStart
-from handlers import register, start, bus_list, bus_check
-from keyboards import start_kb
+from handlers import register, bus_list, bus_check
 from database.db import init_db 
 
 from dotenv import find_dotenv, load_dotenv
@@ -16,7 +14,6 @@ ALLOWED_UPDATES = ['message','edited_message']
 bot = Bot(token=os.getenv('TOKEN'))
 dp = Dispatcher()
 
-dp.include_router(start.router)
 dp.include_router(register.router)
 dp.include_router(bus_list.router)
 dp.include_router(bus_check.router)
